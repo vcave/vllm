@@ -86,16 +86,22 @@ try:
 
     logger.info("NIXL is available")
 except ImportError:
-    logger.warning("NIXL is not available")
-    NixlWrapper = None
-    nixlXferTelemetry = None
-
+    try:
+        from rixl._api import nixl_agent as NixlWrapper
+        from rixl._bindings import nixlXferTelemetry
+    except ImportError:
+        logger.warning("NIXL is not available")
+        NixlWrapper = None
+        nixlXferTelemetry = None
 
 try:
     from nixl._api import nixl_agent_config
 except ImportError:
-    nixl_agent_config = None
-    logger.warning("NIXL agent config is not available")
+    try:
+        from rixl._api import nixl_agent_config
+    except ImportError:
+        nixl_agent_config = None
+        logger.warning("NIXL agent config is not available")
 
 # Supported platforms and types of kv transfer buffer.
 # {device: tuple of supported kv buffer types}
